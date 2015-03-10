@@ -3,8 +3,7 @@
 from django.test import TestCase
 from core.forms import UploadForm
 from django import forms
-from django.core.files.uploadedfile import SimpleUploadedFile
-
+from core.views import parse_file
 
 class TestViews(TestCase):
     """ Test app's URLs """
@@ -22,22 +21,29 @@ class TestViews(TestCase):
         form = self.resp.context['form']
         self.assertIsInstance(form, UploadForm)
 
-    def test_form_has_filefield(self):
-        form = self.resp.context['form']
-        self.assertIsInstance(form.fields['sourcefile'], forms.FileField)
-
 
 class TestForm(TestCase):
-    def setUp(self):
-        self.file = SimpleUploadedFile(
-            "example_input.tab", b"some\tcontent", content_type="text/csv")
 
-    def test_redirect_on_success(self):
-        resp = self.client.post('/', {'sourcefile': self.file})
-        self.assertRedirects(resp, '/success/')
+    # def test_redirect_on_success(self):
+    #     with open('example_input.tab') as f:
+    #         resp = self.client.post('/', {'sourcefile': f})
+    #         self.assertRedirects(resp, '/success/')
 
     def test_form_fail(self):
         resp = self.client.post('/', {})
         form = resp.context['form']
-        self.assertContains(resp, 'This field is required.')
+        self.assertFalse(form.is_valid())
+
+    def test_form_has_filefield(self):
+        resp = self.client.get('/')
+        form = resp.context['form']
+        self.assertIsInstance(
+            form.fields['sourcefile'], forms.FileField)
+
+    def test_file_is_parsed(self):
+        with open('example_input.tab') as f:
+            content = parse_file(f)
+            expected = ['purchaser name', 'item description', 'item price', 'purchase count', 'merchant address', 'merchant name']
+            self.assertEqual(expected, content.__next__())
+
 

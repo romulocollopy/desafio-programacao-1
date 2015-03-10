@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import csv
+
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from django.views.generic.base import TemplateView
 
@@ -15,21 +17,21 @@ def home(request):
     )
     return render(request, 'core/home.html', context)
 
-
 def parse_form(request):
     form = UploadForm(request.POST, request.FILES)
     if not form.is_valid():
         return render(request, 'core/home.html', dict(form=form))
 
     file = form.cleaned_data.get('sourcefile')
-    return parse_file(file)
+    parsed = parse_file(file)
 
+    return HttpResponseRedirect('/success/')
 
 def success(request):
     return HttpResponse('Success')
 
 
 def parse_file(file):
-    bitestr = file.read()
+    content = csv.reader(file, dialect='excel-tab')
+    return content
 
-    return HttpResponseRedirect('/success/')
