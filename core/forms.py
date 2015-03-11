@@ -12,6 +12,7 @@ class PurchaseForm(ModelForm):
 
     class Meta:
         model = Purchase
+
         fields = [
             'item_price', 'merchant_address', 'purchase_count',
             'item_description', 'purchaser_name', 'merchant_name'

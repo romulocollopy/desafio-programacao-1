@@ -11,6 +11,9 @@ class UploadAction(models.Model):
         purchases = cls.objects.get(pk=UA.pk).purchase_set.all()
         return sum([i.item_receipt for i in purchases])
 
+    def __str__(self):
+        return 'Upload realizado em {}'.format(self.timestamp)
+
 class Purchase(models.Model):
     uploadaction = models.ForeignKey(UploadAction)
     item_price = models.DecimalField(decimal_places=2, max_digits=14)
@@ -27,3 +30,6 @@ class Purchase(models.Model):
     @classmethod
     def total_receipt(cls):
         return sum([i.item_receipt for i in cls.objects.all()])
+
+    def __str__(self):
+        return 'Purchaser: {}'.format(self.purchaser_name)

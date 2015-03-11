@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import csv
+
 from django.test import TestCase
 from django.forms import FileField
 
@@ -31,7 +33,7 @@ class TestForm(TestCase):
     def test_redirect_on_success(self):
         with open('example_input.tab', 'rb') as tabfile:
             resp = self.client.post('/', {'sourcefile': tabfile})
-            self.assertRedirects(resp, '/success/')
+            self.assertEqual(302, resp.status_code)
 
     def test_form_fail(self):
         resp = self.client.post('/', {})
@@ -46,13 +48,15 @@ class TestForm(TestCase):
 
     def test_file_is_parsed(self):
         """ tests field success parsing titles by comparing two sets """
-        with open('example_input.tab') as f:
+        with open('example_input.tab', 'rt') as f:
             content = parse_file(f)
             expected = {
-                'item price', 'merchant address', 'purchase count',
-                'item description', 'purchaser name', 'merchant name'
-                }
-            self.assertEqual(expected, set(content.__next__().keys()))
+                'purchaser_name': 'João Silva', 'merchant_name': "Bob's Pizza",
+                'item_price': '10.0', 'merchant_address': '987 Fake St',
+                'item_description': 'R$10 off R$20 of food',
+                'purchase_count': '2'}
+
+            self.assertEqual(expected, content[0])
 
 
 class TestModels(TestCase):
