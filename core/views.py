@@ -5,8 +5,8 @@ import csv
 from django.shortcuts import render, HttpResponseRedirect, HttpResponse
 from django.views.generic.base import TemplateView
 
-from core.forms import UploadForm
-
+from core.forms import UploadForm, PurchaseForm
+from core.models import Purchase, UploadAction
 
 def home(request):
     if request.method == 'POST':
@@ -23,15 +23,27 @@ def parse_form(request):
         return render(request, 'core/home.html', dict(form=form))
 
     file = form.cleaned_data.get('sourcefile')
-    parsed = parse_file(file)
+    ua = parse_file(file)
 
-    return HttpResponseRedirect('/success/')
+    return HttpResponseRedirect('/success/', {'ua': ua})
+
 
 def success(request):
-    return HttpResponse('Success')
+    import ipdb; ipdb.set_trace()
+    upload_receipt = UploadAction.upload_receipt()
+    return HttpResponse(
+        'A receita bruta do upload é de {}'.format(upload_receipt)
+        )
 
 
 def parse_file(file):
-    content = csv.reader(file, dialect='excel-tab')
-    return content
+    ua = UploadAction()
+    content = csv.DictReader(file, dialect='excel-tab')
+
+    for i in content:
+        i['uploadaction'] = ua
+        pf = PurchaseForm(i)
+        pf.save()
+
+    return ua
 
