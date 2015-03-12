@@ -30,7 +30,6 @@ def parse_form(request):
         return render(request, 'core/home.html', dict(form=form))
 
     file = TextIOWrapper(request.FILES['sourcefile'].file, encoding='utf-8')
-    # file = form.cleaned_data.get('sourcefile')
     file_data = parse_file(file)
     ua = save_data(file_data)
     redirect_url = '/upload-detail/{}'.format(ua.pk)
@@ -40,9 +39,11 @@ def parse_form(request):
 def upload_detail(request, id):
     ua = get_object_or_404(UploadAction, pk=id)
     upload_receipt = UploadAction.upload_receipt(ua)
-    return HttpResponse(
-        'A receita bruta do upload é de {}'.format(upload_receipt)
+    context = dict(
+        uploadfile = ua,
+        total = upload_receipt
         )
+    return render(request, 'core/detail.html', context)
 
 
 def parse_file(file):

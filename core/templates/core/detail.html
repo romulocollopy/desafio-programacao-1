@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content%}
+<h1>Upload file</h1>
+
+
+<table>
+	<thead>
+		<tr>
+			<td>Purchaser Name</td>
+			<td>Item Description</td>
+			<td>Item Price</td>
+			<td>Purchase Count</td>
+			<td>Merchant Name</td>
+			<td>Merchant Address</td>
+			<td>Total</td>
+		</tr>
+	</thead>
+	<tbody>
+	{% for line in uploadfile.purchase_set.all %}
+		<tr>
+			<td>{{ line.purchaser_name }}</td>
+			<td>{{ line.item_description }}</td>
+			<td>{{ line.item_price }}</td>
+			<td>{{ line.purchase_count }}</td>
+			<td>{{ line.merchant_name }}</td>
+			<td>{{ line.merchant_address }}</td>
+			<td>{{ line.item_receipt }}</td>
+		</tr>
+	{% endfor %}
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="6">&nbsp</td>
+			<td colspan="6"><strong>{{ total }}</strong></td>
+		</tr>
+	</tfoot>
+
+{% endblock content %}

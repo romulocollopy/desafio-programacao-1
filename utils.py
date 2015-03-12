@@ -1,4 +1,6 @@
+from django.core.files.uploadedfile import InMemoryUploadedFile
+
 
 def ws_to_under(string):
-    s = string.split()
-    return '_'.join(s)
+    return string.replace(" ", "_")
+
