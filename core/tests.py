@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import csv
+from decimal import *
 
 from django.test import TestCase
 from django.forms import FileField
@@ -100,6 +101,17 @@ class TestModels(TestCase):
         rec2 = u2.upload_receipt
 
         self.assertEqual(Purchase.total_receipt(), rec1+rec2)
+
+    def test_average_item_price(self):
+        Purchase.objects.all().delete()
+
+        p1 = mommy.make(Purchase)
+        p2 = mommy.make(Purchase)
+        TWOPLACES = Decimal(10) ** -2
+        method = Decimal(Purchase.average_item_price()).quantize(TWOPLACES)
+
+        avg = (p1.item_price + p2.item_price) / 2
+        self.assertEqual(avg, method)
 
     def make_purchases(self, uploadaction, number):
         for i in range(number):

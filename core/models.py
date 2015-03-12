@@ -8,7 +8,10 @@ class UploadAction(models.Model):
     @classmethod
     def upload_average_receipt(cls):
         pr = Purchase.total_receipt()
-        return pr/cls.objects.count()
+        try:
+            return pr/cls.objects.count()
+        except ZeroDivisionError:
+            return None
 
     @property
     def upload_receipt(self):

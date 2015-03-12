@@ -6,7 +6,7 @@ Este desafio deve ser feito por você em sua casa. Gaste o tempo que você quise
 ## Instruções de instalação
 1. Esse pequeno projeto foi feito utilizando Python 3.4.
 1. Supondo que tenha o pip instalado, siga esses passos:
-1. Clone o repositório: `g1it clone git@github.com:romulocollopy/desafio-programacao-1.git`
+1. Clone o repositório: `git clone git@github.com:romulocollopy/desafio-programacao-1.git`
 1. Crie um Virtualenv: `pyvenv env; source env/bin/activate`
 1. Instale as dependencias: `pip install -r requirements.txt`
 1. Realize as migrações: `python manage.py migrate`
