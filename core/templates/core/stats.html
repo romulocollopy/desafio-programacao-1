@@ -1,0 +1,14 @@
+<ol>
+	{% for ua in stats %}
+	<li>Upload from {{ ua.timestamp }}:
+		<ul>
+			<li>Total receipt: {{ ua.upload_receipt }}</li>
+			<li>Number of Items : {{ ua.items_count }}</li>
+		</ul>
+	</li>
+	{% endfor %}
+</ol>
+
+<p>Total Uploads: {{ stats.count }}</p>
+<p>Average Receipt: {{ stats.upload_average_receipt }}</p>
+<p>Average Item Price: {{ stats.avg_item_price }}</p>

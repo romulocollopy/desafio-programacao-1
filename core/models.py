@@ -1,15 +1,23 @@
 from django.db import models
-
-# Create your models here.
+from django.db.models import Avg
 
 
 class UploadAction(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
     @classmethod
-    def upload_receipt(cls, UA):
-        purchases = cls.objects.get(pk=UA.pk).purchase_set.all()
+    def upload_average_receipt(cls):
+        pr = Purchase.total_receipt()
+        return pr/cls.objects.count()
+
+    @property
+    def upload_receipt(self):
+        purchases = self.purchase_set.all().select_related('purchase')
         return sum([i.item_receipt for i in purchases])
+
+    @property
+    def items_count(self):
+        return self.purchase_set.count()
 
     def __str__(self):
         return 'Upload realizado em {}'.format(self.timestamp)
@@ -30,6 +38,10 @@ class Purchase(models.Model):
     @classmethod
     def total_receipt(cls):
         return sum([i.item_receipt for i in cls.objects.all()])
+
+    @classmethod
+    def average_item_price(cls):
+        return cls.objects.all().aggregate(Avg('item_price'))['item_price__avg']
 
     def __str__(self):
         return 'Purchaser: {}'.format(self.purchaser_name)

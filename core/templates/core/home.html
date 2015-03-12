@@ -6,6 +6,9 @@
 	{% csrf_token %}
 	{{ form }}
 	<button type="submit">Send</button>
+	{% if stats %}
+		{% include "core/stats.html" %}
+	{% endif %}
 </form>
 
 {% endblock content %}

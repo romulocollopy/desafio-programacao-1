@@ -96,8 +96,8 @@ class TestModels(TestCase):
         self.make_purchases(u1, 3)
         self.make_purchases(u2, 5)
 
-        rec1 = UploadAction.upload_receipt(u1)
-        rec2 = UploadAction.upload_receipt(u2)
+        rec1 = u1.upload_receipt
+        rec2 = u2.upload_receipt
 
         self.assertEqual(Purchase.total_receipt(), rec1+rec2)
 

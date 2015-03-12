@@ -18,8 +18,10 @@ def home(request):
     if request.method == 'POST':
         return parse_form(request)
 
+    stats = get_stats()
     context = dict(
         form=UploadForm(),
+        stats=stats,
     )
     return render(request, 'core/home.html', context)
 
@@ -38,7 +40,7 @@ def parse_form(request):
 
 def upload_detail(request, id):
     ua = get_object_or_404(UploadAction, pk=id)
-    upload_receipt = UploadAction.upload_receipt(ua)
+    upload_receipt = ua.upload_receipt
     context = dict(
         uploadfile = ua,
         total = upload_receipt
@@ -70,3 +72,9 @@ def save_data(dict_list):
         pf.save()
 
     return ua
+
+def get_stats():
+    stats =  UploadAction.objects.all()
+    stats.upload_average_receipt = UploadAction.upload_average_receipt()
+    stats.avg_item_price = Purchase.average_item_price()
+    return stats
