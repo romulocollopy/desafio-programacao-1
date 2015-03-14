@@ -1,6 +1,6 @@
 <ol>
 	{% for ua in stats %}
-	<li>Upload from {{ ua.timestamp }}:
+	<li><a href="upload-detail/{{ ua.pk }}">Upload from {{ ua.timestamp }}</a>:
 		<ul>
 			<li>Total receipt: {{ ua.upload_receipt }}</li>
 			<li>Number of Items : {{ ua.items_count }}</li>
