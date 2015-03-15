@@ -33,6 +33,10 @@ def parse_form(request):
 
     file = TextIOWrapper(request.FILES['sourcefile'].file, encoding='utf-8')
     file_data = parse_file(file)
+    if not file_data:
+        form.errors.update({'sourcefile': ['File has no valid data.']})
+        return render(request, 'core/home.html', dict(form=form))
+
     ua = save_data(file_data)
     redirect_url = '/upload-detail/{}'.format(ua.pk)
     return HttpResponseRedirect(redirect_url)
@@ -51,14 +55,21 @@ def upload_detail(request, id):
 def parse_file(file):
     content = csv.DictReader(file, dialect='excel-tab')
 
-    dict_list = []
-    for line in content:
-        dict_list += [{ws_to_under(k): v for k, v in line.items()}]
+    try:
+        dict_list = []
+        for line in content:
+            dict_list += [{ws_to_under(k): v for k, v in line.items()}]
+
+    except UnicodeDecodeError:
+        return {}
 
     return dict_list
 
 
 def save_data(dict_list):
+    if not dict_list:
+        return None
+
     ua = UploadAction()
     ua.save()
 
